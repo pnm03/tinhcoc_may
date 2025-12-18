@@ -16,21 +16,21 @@ function App() {
       return;
     }
 
-    // Logic: Mua 2 tặng 1
+    // --- LOGIC CHÍNH ---
+    // Mua 2 tặng 1
     // Mỗi 3 cốc thì có 1 bộ (2 trả tiền, 1 tặng)
     const sets = Math.floor(num / 3);
     const remainder = num % 3;
 
     let pay = sets * 2 + remainder;
     let free = sets;
-
-    // Nếu dư 2 cốc (ví dụ nhập 2), khách mua nốt 2 cốc này -> được tặng thêm 1
-    // Ví dụ nhập 20: 20/3 = 6 dư 2.
-    // 6 bộ: trả 12, tặng 6.
-    // Dư 2: trả thêm 2, đủ điều kiện tặng thêm 1.
-    // Tổng trả: 12 + 2 = 14. Tổng tặng: 6 + 1 = 7.
+    
+    // Logic bắt buộc: Nếu dư 2 (ví dụ 14 = 4 bộ dư 2)
+    // Thì 2 cốc dư đó sẽ được ghép thành 1 bộ mới (mua 2 được tặng 1)
+    // Trả 10 (8+2), Tặng 5 (4+1) -> Tổng 15.
     if (remainder === 2) {
-      free += 1;
+      pay = (sets + 1) * 2; 
+      free = sets + 1;
     }
 
     setResult({
@@ -60,7 +60,7 @@ function App() {
 
         <div className="p-8">
           {/* Input Section */}
-          <div className="mb-8">
+          <div className="mb-6">
             <label className="block text-gray-700 font-semibold mb-2 ml-1">
               Khách muốn bao nhiêu cốc?
             </label>
@@ -85,7 +85,7 @@ function App() {
                   <Coffee className="w-6 h-6" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500 font-medium uppercase tracking-wider">Cần làm (Tính tiền)</p>
+                  <p className="text-sm text-gray-500 font-medium uppercase tracking-wider">CẦN TÍNH TIỀN</p>
                   <p className="text-3xl font-bold text-gray-800">{result.pay} <span className="text-sm font-normal text-gray-500">cốc</span></p>
                 </div>
               </div>
@@ -98,21 +98,35 @@ function App() {
                   <Gift className="w-6 h-6" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500 font-medium uppercase tracking-wider">Tặng thêm</p>
+                  <p className="text-sm text-gray-500 font-medium uppercase tracking-wider">SỐ CỐC ĐƯỢC TẶNG</p>
                   <p className="text-3xl font-bold text-gray-800">{result.free} <span className="text-sm font-normal text-gray-500">cốc</span></p>
                 </div>
               </div>
             </div>
 
-            {/* Total Summary */}
-            <div className="mt-6 pt-6 border-t border-gray-100 text-center">
-              <p className="text-gray-500 text-sm mb-1">Tổng khách nhận được</p>
-              <p className="text-lg font-semibold text-gray-800">
-                {result.total > 0 ? (
-                   <span>{result.total} cốc {parseInt(target) < result.total && <span className="text-green-600 text-sm">(Dư {result.total - parseInt(target)})</span>}</span>
-                ) : '---'}
-              </p>
+            {/* Total Summary Field */}
+             <div className="bg-gray-50 rounded-xl p-5 border border-gray-200 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                 <div className="bg-gray-200 p-3 rounded-full text-gray-600">
+                  <Sparkles className="w-6 h-6" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500 font-medium uppercase tracking-wider">TỔNG NHẬN ĐƯỢC</p>
+                  <div className="flex items-baseline gap-2">
+                     <p className="text-2xl font-bold text-gray-800">
+                      {result.total > 0 ? result.total : 0} <span className="text-sm font-normal text-gray-500">cốc</span>
+                    </p>
+                     {result.total > parseInt(target) && (
+                      <span className="text-sm font-medium text-green-600 bg-green-100 px-2 py-0.5 rounded-full">
+                        Dư {result.total - parseInt(target)}
+                      </span>
+                    )}
+                  </div>
+                 
+                </div>
+              </div>
             </div>
+
           </div>
         </div>
       </div>
@@ -121,4 +135,3 @@ function App() {
 }
 
 export default App
-
